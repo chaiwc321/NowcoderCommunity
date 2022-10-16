@@ -1,1 +1,1 @@
-2022-10-10 19:56:25,249 WARN [main] c.n.c.LoggerTests [LoggerTests.java:27] warn log
+2022-10-14 22:23:26,688 WARN [http-nio-8080-exec-3] o.s.w.s.m.s.DefaultHandlerExceptionResolver [AbstractHandlerExceptionResolver.java:198] Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; nested exception is java.lang.NumberFormatException: For input string: ""]
