@@ -10,8 +10,9 @@ import java.util.UUID;
 
 public class CommunityUtil {
 
+    // 生成激活码
     public static String generateUUID(){
-        return UUID.randomUUID().toString().replaceAll("-",""); //UUID包生成随机码，转字符串格式，把里面生成的-去掉
+        return UUID.randomUUID().toString().replaceAll("-","");  // UUID包生成随机码，转字符串格式，把里面生成的-去掉
     }
 
     // 密码加密
