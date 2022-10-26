@@ -6,6 +6,7 @@ import com.nowcoder.communnity.entity.LoginTicket;
 import com.nowcoder.communnity.entity.User;
 import com.nowcoder.communnity.util.CommunityConstant;
 import com.nowcoder.communnity.util.CommunityUtil;
+import com.nowcoder.communnity.util.CookieUtil;
 import com.nowcoder.communnity.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,42 @@ public class UserService implements CommunityConstant {
         }
     }
 
+    public Map<String, Object> setPassword(User user, String password, String curPassword, String finalPassword) {
+
+        HashMap<String, Object> map = new HashMap<>();
+        String prePassword = user.getPassword();
+
+        if(StringUtils.isBlank(password) || StringUtils.isBlank(curPassword) || StringUtils.isBlank(finalPassword)) {
+            map.put("passwordMsg", "密码不能为空！");
+            return map;
+        }
+        password = CommunityUtil.md5(password + user.getSalt());
+        if (!prePassword.equals(password)){
+            map.put("passwordMsg", "密码不正确！");
+            return map;
+        }
+        if(!curPassword.equals(finalPassword)) {
+            map.put("passwordMsg", "两次密码不一致");
+            return map;
+        }
+        if(curPassword.length() < 6) {
+            map.put("passwordMsg", "密码长度不能小于6位");
+            return map;
+        }
+
+        curPassword = CommunityUtil.md5(curPassword + user.getSalt());
+        if(curPassword.equals(prePassword)) {
+            map.put("passwordMsg", "需要和原先密码不一致");
+            return map;
+        }
+
+        userMapper.updatePassword(user.getId(), curPassword);
+        map.put("successMsg", "密码设置成功！请重新登录。");
+
+        return map;
+
+    }
+
     public Map<String, Object> login(String username, String password, int expiredSeconds) {
 
         Map<String, Object> map = new HashMap<>();
@@ -166,5 +203,9 @@ public class UserService implements CommunityConstant {
 
     public LoginTicket findLoginTicket(String ticket) {
         return loginTicketMapper.selectByTicket(ticket);
+    }
+
+    public int updateHeader(int userId, String headerUrl) {
+        return userMapper.updateHeader(userId, headerUrl);
     }
 }
