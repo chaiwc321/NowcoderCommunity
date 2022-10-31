@@ -1,6 +1,7 @@
 package com.nowcoder.communnity.controller;
 
 import com.nowcoder.communnity.alphaservice.UserService;
+import com.nowcoder.communnity.annotation.LoginRequired;
 import com.nowcoder.communnity.entity.LoginTicket;
 import com.nowcoder.communnity.entity.User;
 import com.nowcoder.communnity.util.CommunityUtil;
@@ -47,6 +48,7 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(path = "/settingPassword", method = RequestMethod.POST)
     public String settingPassword(Model model, HttpServletRequest request, String password, String curPassword, String finalPassword) {
 
@@ -72,6 +74,7 @@ public class UserController {
         }
     }
 
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
 
@@ -109,6 +112,7 @@ public class UserController {
 
     }
 
+
     @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) throws IOException {
 
@@ -136,6 +140,7 @@ public class UserController {
 
 
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getUserSetting() {
         return "site/setting";
