@@ -3,8 +3,15 @@ package com.nowcoder.communnity.alphaservice;
 
 import com.nowcoder.communnity.alphadata.AlphaDao;
 import com.nowcoder.communnity.alphadata.AlphaDaoMyBatis;
+import com.nowcoder.communnity.alphadata.DiscussPostMapper;
+import com.nowcoder.communnity.alphadata.UserMapper;
+import com.nowcoder.communnity.entity.User;
+import com.nowcoder.communnity.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -34,9 +41,26 @@ public class AlphaService {
     @Autowired
     private AlphaDaoMyBatis alphaDaoMyBatis;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private DiscussPostMapper discussPostMapper;
+
     // 定义一个方法
     public String find(){
         return alphaDaoMyBatis.select();
+    }
+
+    @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
+    public Object save1() {
+
+        User user = new User();
+        user.setUsername("alpha");
+        user.setSalt(CommunityUtil.generateUUID().substring(0,4));
+        return "dfsa";
+
+
     }
 
 
