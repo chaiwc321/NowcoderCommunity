@@ -45,6 +45,10 @@ public class UserService implements CommunityConstant {
         return userMapper.selectById(Id);
     }
 
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
+    }
+
     // 根据用户注册时提交的信息，查找数据库并返回对应信息，用map保存
     public Map<String, Object> register(User user){
 
@@ -208,4 +212,5 @@ public class UserService implements CommunityConstant {
     public int updateHeader(int userId, String headerUrl) {
         return userMapper.updateHeader(userId, headerUrl);
     }
+
 }
