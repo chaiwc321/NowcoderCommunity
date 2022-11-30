@@ -62,7 +62,7 @@ public class UserController {
             }
         }
 
-        Map<String, Object>map = userService.setPassword(user, password, curPassword, finalPassword);
+        Map<String, Object> map = userService.setPassword(user, password, curPassword, finalPassword);
         if(map.containsKey("successMsg")) {
             userService.logout(userTicket);
             model.addAttribute("msg", map.get("successMsg"));
