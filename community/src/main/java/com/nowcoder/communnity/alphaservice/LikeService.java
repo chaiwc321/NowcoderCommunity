@@ -52,5 +52,12 @@ public class LikeService {
         return redisTemplate.opsForSet().isMember(entityLikeKey, userId) ? 1 : 0;
     }
 
+    public int findUserLikeCount(int userId) {
+        String userLikeKey = RedisKeyUtil.getUserLikeKey(userId);
+        Integer count = (Integer) redisTemplate.opsForValue().get(userLikeKey);
+        return count = count==null?0:count;
+    }
+
+
 
 }

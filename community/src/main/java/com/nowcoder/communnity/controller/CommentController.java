@@ -1,7 +1,9 @@
 package com.nowcoder.communnity.controller;
 
 import com.nowcoder.communnity.alphaservice.CommentService;
+import com.nowcoder.communnity.annotation.LoginRequired;
 import com.nowcoder.communnity.entity.Comment;
+import com.nowcoder.communnity.entity.User;
 import com.nowcoder.communnity.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,9 +23,14 @@ public class CommentController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment) {
-        comment.setUserId(hostHolder.getUser().getId());
+        User user = hostHolder.getUser();
+        if(user == null) {
+            return "redirect:/login";
+        }
+        comment.setUserId(user.getId());
         comment.setStatus(0);
         comment.setCreateTime(new Date());
         commentService.addComment(comment);

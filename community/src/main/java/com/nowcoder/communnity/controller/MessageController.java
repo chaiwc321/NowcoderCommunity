@@ -2,6 +2,7 @@ package com.nowcoder.communnity.controller;
 
 import com.nowcoder.communnity.alphaservice.MessageService;
 import com.nowcoder.communnity.alphaservice.UserService;
+import com.nowcoder.communnity.annotation.LoginRequired;
 import com.nowcoder.communnity.entity.Message;
 import com.nowcoder.communnity.entity.Page;
 import com.nowcoder.communnity.entity.User;
@@ -119,6 +120,7 @@ public class MessageController {
 
     @RequestMapping(path = "/letter/send", method = RequestMethod.POST)
     @ResponseBody
+    @LoginRequired
     public String sendLetter(String toName, String content) {
         Integer.valueOf("abc");
         User target = userService.findUserByName(toName);

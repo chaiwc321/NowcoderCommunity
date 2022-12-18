@@ -1,3 +1,1 @@
-2022-10-26 17:15:34,748 WARN [HikariPool-1 housekeeper] c.z.h.p.HikariPool [HikariPool.java:766] HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=52s136ms733µs).
-2022-10-26 17:17:28,023 WARN [HikariPool-1 housekeeper] c.z.h.p.HikariPool [HikariPool.java:766] HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m53s276ms401µs600ns).
-2022-10-26 19:57:16,173 WARN [HikariPool-1 housekeeper] c.z.h.p.HikariPool [HikariPool.java:766] HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=48s91ms544µs700ns).
+2022-12-18 10:13:55,140 WARN [http-nio-8080-exec-9] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver [AbstractHandlerExceptionResolver.java:198] Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'int'; nested exception is java.lang.NumberFormatException: For input string: "my-post.html"]

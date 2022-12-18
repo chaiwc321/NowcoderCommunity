@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
             Method method = handlerMethod.getMethod();
             LoginRequired loginRequired = method.getAnnotation(LoginRequired.class);
             if (loginRequired != null && hostHolder.getUser() != null) {
+//                modelAndView.addObject("尚未登录", String);
                 response.sendRedirect(request.getContextPath() + "/login");
                 return false;
             }

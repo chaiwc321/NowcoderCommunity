@@ -1,13 +1,15 @@
 package com.nowcoder.communnity.controller;
 
+import com.nowcoder.communnity.alphaservice.FollowService;
+import com.nowcoder.communnity.alphaservice.LikeService;
 import com.nowcoder.communnity.alphaservice.UserService;
 import com.nowcoder.communnity.annotation.LoginRequired;
 import com.nowcoder.communnity.entity.LoginTicket;
 import com.nowcoder.communnity.entity.User;
+import com.nowcoder.communnity.util.CommunityConstant;
 import com.nowcoder.communnity.util.CommunityUtil;
 import com.nowcoder.communnity.util.CookieUtil;
 import com.nowcoder.communnity.util.HostHolder;
-import org.apache.catalina.Host;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +28,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(path = "/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -47,6 +46,12 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @RequestMapping(path = "/settingPassword", method = RequestMethod.POST)
@@ -138,14 +143,37 @@ public class UserController {
 
     }
 
+    // 个人主页
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUser(userId);
+        if(user == null) {
+            throw new RuntimeException("该用户不存在！");
+        }
 
+        model.addAttribute("user", user);
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", likeCount);
+
+        // 关注数量
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_PERSON);
+        model.addAttribute("followeeCount", followeeCount);
+        // 粉丝数量
+        long followerCount = followService.findFollowCount(ENTITY_TYPE_PERSON, userId);
+        model.addAttribute("followerCount", followerCount);
+        // 是否已经关注
+        boolean hasFollowed = false;
+        if(hostHolder.getUser() != null) {
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_PERSON, userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
+        return "site/profile";
+    }
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getUserSetting() {
         return "site/setting";
     }
-
-
 
 }
