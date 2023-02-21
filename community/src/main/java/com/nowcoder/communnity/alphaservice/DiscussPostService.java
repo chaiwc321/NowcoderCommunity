@@ -40,11 +40,15 @@ public class DiscussPostService {
     }
 
     public DiscussPost getDiscussPost(int id) {
-        return discussPostMapper.selectDiscussPost(id);
+        return discussPostMapper.selectDiscussPostBy(id);
     }
 
     public int updateCommentCount(int entityId, int count) {
         return discussPostMapper.updateCommentCount(entityId, count);
+    }
+
+    public DiscussPost findDiscussPostById(int id) {
+        return discussPostMapper.selectDiscussPostBy(id);
     }
 
 }
