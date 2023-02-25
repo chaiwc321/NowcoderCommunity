@@ -127,7 +127,7 @@
 							<div class="mt-0">
 								<span class="font-size-12 text-success" th:utext="${cvo.user.username}">掉脑袋切切</span>
 								<span class="badge badge-secondary float-right floor">
-									<i th:text="${page.offset} + cvoStat.count">1</i>#
+									<i th:text="${page.offset + cvoStat.count}">1</i>#
 								</span>
 							</div>
 							<div class="mt-2" th:utext="${cvo.comment.content}">

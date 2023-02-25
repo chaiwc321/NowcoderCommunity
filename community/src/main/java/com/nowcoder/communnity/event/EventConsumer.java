@@ -1,7 +1,10 @@
 package com.nowcoder.communnity.event;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nowcoder.communnity.alphaservice.DiscussPostService;
+import com.nowcoder.communnity.alphaservice.ElasticsearchService;
 import com.nowcoder.communnity.alphaservice.MessageService;
+import com.nowcoder.communnity.entity.DiscussPost;
 import com.nowcoder.communnity.entity.Event;
 import com.nowcoder.communnity.entity.Message;
 import com.nowcoder.communnity.util.CommunityConstant;
@@ -23,6 +26,12 @@ public class EventConsumer implements CommunityConstant {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private DiscussPostService discussPostService;
+
+    @Autowired
+    private ElasticsearchService elasticsearchService;
 
     @KafkaListener(topics = {TOPIC_COMMENT, TOPIC_FOLLOW, TOPIC_LIKE})
     public void handCommentMessage(ConsumerRecord record) {
@@ -58,6 +67,27 @@ public class EventConsumer implements CommunityConstant {
 
         message.setContent(JSONObject.toJSONString(content));
         messageService.addMessage(message);
+
+    }
+
+    // 消费发帖事件
+    @KafkaListener(topics = {TOPIC_PUBLISH})
+    public void handlePublishMessage(ConsumerRecord record) {
+        if (record == null || record.value() == null) {
+            logger.error("消息的内容为空！");
+            return;
+        }
+
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+
+        if (event == null) {
+            logger.error("消息格式错误");
+            return;
+        }
+
+        // 从事件中得到帖子id，查到对应的帖子，将其存入es
+        DiscussPost post = discussPostService.findDiscussPostById(event.getEntityId());
+        elasticsearchService.saveDiscussPost(post);
 
     }
 

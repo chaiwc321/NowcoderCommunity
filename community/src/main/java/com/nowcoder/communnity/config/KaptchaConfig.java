@@ -12,6 +12,8 @@ import java.util.Properties;
 @Configuration
 public class KaptchaConfig {
 
+    // bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+    // bin\windows\kafka-server-start.bat config\server.properties
     @Bean
     public Producer kaptchaProducer() {
         Properties properties = new Properties();
