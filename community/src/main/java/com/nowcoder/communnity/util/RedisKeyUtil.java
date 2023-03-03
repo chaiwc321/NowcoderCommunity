@@ -1,5 +1,7 @@
 package com.nowcoder.communnity.util;
 
+import org.apache.lucene.analysis.pattern.PatternReplaceCharFilter;
+
 public class RedisKeyUtil {
 
     private static final String SPILT = ":";
@@ -12,6 +14,7 @@ public class RedisKeyUtil {
     private static final String PREFIX_USER = "user";
     private static final String PREFIX_UV = "uv";
     private static final String PREFIX_DAU = "dau";
+    private static final String PREFIX_POST = "post";
 
 
 
@@ -72,5 +75,9 @@ public class RedisKeyUtil {
     // 区间之内UV的合并
     public static String getDAUKey(String startDate, String endDate) {
         return PREFIX_DAU + SPILT + startDate + SPILT + endDate;
+    }
+
+    public static String getPostScoreKey() {
+        return PREFIX_POST + SPILT + "score";
     }
 }

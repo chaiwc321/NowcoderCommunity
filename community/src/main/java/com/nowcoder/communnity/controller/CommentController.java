@@ -10,7 +10,9 @@ import com.nowcoder.communnity.entity.User;
 import com.nowcoder.communnity.event.EventProducer;
 import com.nowcoder.communnity.util.CommunityConstant;
 import com.nowcoder.communnity.util.HostHolder;
+import com.nowcoder.communnity.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,9 @@ public class CommentController implements CommunityConstant {
     // 用来找帖子的用户还是id来着
     @Autowired
     private DiscussPostService discussPostService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @LoginRequired
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)
@@ -72,7 +77,11 @@ public class CommentController implements CommunityConstant {
                     .setEntityType(ENTITY_TYPE_POST)
                     .setEntityId(discussPostId);
             eventProducer.fireEvent(event);
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            // Redis什么类型比较好
+            redisTemplate.opsForSet().add(redisKey, discussPostId);
         }
+
 
 
 
