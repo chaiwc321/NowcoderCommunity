@@ -81,6 +81,5 @@ public class PostScoreRefreshJob implements Job, CommunityConstant {
         // 同步搜索数据
         post.setScore(score);
         elasticsearchService.saveDiscussPost(post);
-
     }
 }
