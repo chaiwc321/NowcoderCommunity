@@ -10,6 +10,8 @@ import com.nowcoder.communnity.util.CommunityConstant;
 import com.nowcoder.communnity.util.CommunityUtil;
 import com.nowcoder.communnity.util.CookieUtil;
 import com.nowcoder.communnity.util.HostHolder;
+import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,19 @@ public class UserController implements CommunityConstant {
     @Autowired
     private FollowService followService;
 
+    @Value("${qiniu.key.access}")
+    private String accessKey;
+
+    @Value("${qiniu.key.secret}")
+    private String secretKey;
+
+    @Value("${qiniu.bucket.space.name}")
+    private String spaceBucketName;
+
+    @Value("${qiniu.bucket.space.url}")
+    private String spaceBucketUrl;
+
+
     @LoginRequired
     @RequestMapping(path = "/settingPassword", method = RequestMethod.POST)
     public String settingPassword(Model model, HttpServletRequest request, String password, String curPassword, String finalPassword) {
@@ -79,6 +94,20 @@ public class UserController implements CommunityConstant {
         }
     }
 
+    // 服务器更新头像
+    @RequestMapping(path = "/header/url", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateHeaderUrl(String fileName) {
+        if(StringUtils.isBlank(fileName)) {
+            return CommunityUtil.getJSONString(1, "文件名不能为空！");
+        }
+        String url = spaceBucketUrl + "/" + fileName;
+        userService.updateHeader(hostHolder.getUser().getId(), url);
+        return CommunityUtil.getJSONString(0);
+    }
+
+
+    // 弃用
     @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
@@ -117,7 +146,7 @@ public class UserController implements CommunityConstant {
 
     }
 
-
+    // 弃用
     @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) throws IOException {
 
@@ -172,7 +201,18 @@ public class UserController implements CommunityConstant {
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
-    public String getUserSetting() {
+    public String getUserSetting(Model model) {
+        String fileName = CommunityUtil.generateUUID();
+
+        StringMap policy = new StringMap();
+        policy.put("returnBody", CommunityUtil.getJSONString(0));
+
+        Auth auth = Auth.create(accessKey, secretKey);
+        String uploadToken = auth.uploadToken(spaceBucketName, fileName, 3600, policy);
+
+        model.addAttribute("uploadToken", uploadToken);
+        model.addAttribute("fileName", fileName);
+
         return "site/setting";
     }
 

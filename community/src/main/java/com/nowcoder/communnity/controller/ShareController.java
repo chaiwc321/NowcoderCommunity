@@ -35,8 +35,20 @@ public class ShareController implements CommunityConstant {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    @Value("${wk.imgae.storage}")
+    @Value("${wk.image.storage}")
     private String wkImageStorage;
+
+    @Value("${qiniu.key.access}")
+    private String accessKey;
+
+    @Value("${qiniu.key.secret}")
+    private String secretKey;
+
+    @Value("${qiniu.bucket.space.name}")
+    private String spaceBucketName;
+
+    @Value("${qiniu.bucket.space.url}")
+    private String spaceBucketUrl;
 
     @RequestMapping(path = "/share", method = RequestMethod.GET)
     @ResponseBody
@@ -54,11 +66,13 @@ public class ShareController implements CommunityConstant {
 
         // 返回方法路径
         Map<String, Object> map = new HashMap<>();
-        map.put("shareUrl", domain + contextPath + "/share/image/" + fileName);
+//        map.put("shareUrl", domain + contextPath + "/share/image/" + fileName);
+        map.put("shareUrl", spaceBucketUrl + "/" + fileName);
 
         return CommunityUtil.getJSONString(0, null, map);
     }
 
+    // 废弃
     // 与用户头像处理类似
     @RequestMapping(path = "/share/image/{fileName}", method = RequestMethod.GET)
     public void getShareImage(@PathVariable("fileName") String fileName, HttpServletResponse response) {

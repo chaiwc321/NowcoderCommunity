@@ -13,7 +13,7 @@ public class WkConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(WkConfig.class);
 
-    @Value("${wk.imgae.storage}")
+    @Value("${wk.image.storage}")
     private String wkImageStorage;
 
     @PostConstruct
